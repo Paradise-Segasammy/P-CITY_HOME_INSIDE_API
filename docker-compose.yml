@@ -1,0 +1,10 @@
+services:
+  home-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: home-api
+    env_file:
+      - .env
+    ports:
+      - "3003:3003"
