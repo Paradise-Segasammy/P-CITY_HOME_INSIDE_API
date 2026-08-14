@@ -1,7 +1,7 @@
 export default () => ({
   app: {
     nodeEnv: process.env.NODE_ENV || 'local',
-    port: Number(process.env.PORT || 3000),
+    port: Number(process.env.PORT || 3001),
     globalPrefix: process.env.GLOBAL_PREFIX || 'api',
     corsOrigin: process.env.CORS_ORIGIN || '*',
     packageApiKey: process.env.PACKAGE_API_KEY,

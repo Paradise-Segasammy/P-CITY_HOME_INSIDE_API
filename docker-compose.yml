@@ -7,4 +7,8 @@ services:
     env_file:
       - .env
     ports:
-      - "3003:3003"
+      - "${HOST_PORT:-3001}:${PORT:-3001}"
+    # If OCI_LIB_DIR is set to /opt/oracle/instantclient, mount the server's
+    # Oracle Instant Client directory there:
+    # volumes:
+    #   - ${ORACLE_INSTANT_CLIENT_DIR}:/opt/oracle/instantclient:ro
