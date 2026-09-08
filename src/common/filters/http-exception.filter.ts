@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { BusinessException } from '../errors/business.exception';
 
@@ -7,6 +7,7 @@ import { BusinessException } from '../errors/business.exception';
  */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(HttpExceptionFilter.name);
   /**
    * 예외 처리
    * @param exception 예외
@@ -19,6 +20,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     const exceptionResponse = exception instanceof HttpException ? exception.getResponse() : 'Internal server error';
+
+    if (status >= 500) {
+      // Log diagnostic codes, not SQL, binds, credentials or request contents.
+      const databaseCodes = exception instanceof Error
+        ? [...new Set(exception.message.match(/\b(?:ORA|NJS|DPI)-\d+\b/g) ?? [])]
+        : [];
+      this.logger.error(JSON.stringify({
+        event: 'http_server_error',
+        statusCode: status,
+        method: request.method,
+        route: request.route?.path ?? 'unmatched',
+        databaseCodes,
+      }));
+    }
 
     response.status(status).json({
       success: false,

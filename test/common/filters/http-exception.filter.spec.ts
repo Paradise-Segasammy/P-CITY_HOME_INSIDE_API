@@ -1,9 +1,12 @@
-import { ArgumentsHost, BadRequestException } from '@nestjs/common';
+import { ArgumentsHost, BadRequestException, Logger } from '@nestjs/common';
 import { BusinessException } from '../../../src/common/errors/business.exception';
 import { CommonErrorCode } from '../../../src/common/errors/common-error-code';
 import { HttpExceptionFilter } from '../../../src/common/filters/http-exception.filter';
 
 describe('HttpExceptionFilter', () => {
+  let log: jest.SpyInstance;
+  beforeEach(() => { log = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined); });
+  afterEach(() => jest.restoreAllMocks());
   const render = (error: unknown) => {
     const response = { status: jest.fn().mockReturnThis(), json: jest.fn() };
     const host = {
@@ -39,5 +42,18 @@ describe('HttpExceptionFilter', () => {
     expect(response.status).toHaveBeenCalledWith(500);
     expect(response.json.mock.calls[0][0].message).toBe('Internal server error');
     expect(response.json.mock.calls[0][0]).not.toHaveProperty('code');
+  });
+
+  it('logs database codes without leaking error details', () => {
+    render(new Error('ORA-00942: private SQL and credentials; NJS-500'));
+    const entry = JSON.parse(log.mock.calls[0][0]);
+    expect(entry).toMatchObject({ statusCode: 500, databaseCodes: ['ORA-00942', 'NJS-500'] });
+    expect(log.mock.calls[0][0]).not.toContain('private SQL');
+    expect(log.mock.calls[0][0]).not.toContain('credentials');
+  });
+
+  it('does not log client validation errors as server errors', () => {
+    render(new BadRequestException('invalid input'));
+    expect(log).not.toHaveBeenCalled();
   });
 });
