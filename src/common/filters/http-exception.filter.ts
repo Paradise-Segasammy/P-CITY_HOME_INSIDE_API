@@ -1,8 +1,17 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { BusinessException } from '../errors/business.exception';
 
+/**
+ * HTTP 예외 응답 포맷 필터
+ */
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  /**
+   * 예외 처리
+   * @param exception 예외
+   * @param host 인자
+   */
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -14,12 +23,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
     response.status(status).json({
       success: false,
       statusCode: status,
+      ...(exception instanceof BusinessException ? { code: exception.code } : {}),
       message: this.getMessage(exceptionResponse),
       timestamp: new Date().toISOString(),
       path: request.url,
     });
   }
 
+  /**
+   * 메시지 가져오기
+   * @param exceptionResponse 예외 응답
+   * @returns 메시지
+   */
   private getMessage(exceptionResponse: string | object): string | object {
     if (typeof exceptionResponse === 'string') return exceptionResponse;
     return exceptionResponse;

@@ -6,6 +6,9 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
+/**
+ * 애플리케이션 부트스트랩
+ */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
@@ -38,10 +41,11 @@ async function bootstrap() {
         type: 'apiKey',
         name: 'x-api-key',
         in: 'header',
-        description: 'Package API key',
+        description: 'Shared S2S API key (HOME_API_KEY)',
       },
-      'package-api-key',
+      'home-api-key',
     )
+    .addSecurityRequirements('home-api-key')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ApiKeyGuard } from './common/guards/api-key.guard';
 import { ConfigModule } from '@nestjs/config';
 import appConfig from './config/app.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './health/health.module';
-import { PackagesModule } from './packages/packages.module';
+import { AriModule } from './ari/ari.module';
+import { TermsModule } from './terms/terms.module';
 
+/**
+ * 루트 애플리케이션 모듈
+ */
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,9 +21,10 @@ import { PackagesModule } from './packages/packages.module';
     }),
     DatabaseModule,
     HealthModule,
-    PackagesModule,
+    AriModule,
+    TermsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: ApiKeyGuard }],
 })
 export class AppModule {}
