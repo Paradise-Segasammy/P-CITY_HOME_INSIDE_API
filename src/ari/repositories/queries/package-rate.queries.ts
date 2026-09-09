@@ -1,3 +1,6 @@
+/**
+ * 패키지 룸 타입별 일자별 요금 조회 쿼리
+ */
 export const findPackageRoomRatesQuery = `
       /* 1. 패키지/룸타입/일자 조건에 맞는 HMS 요금 원천 row를 조회 */
       WITH RATE_ROWS AS (

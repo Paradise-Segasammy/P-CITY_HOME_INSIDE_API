@@ -12,8 +12,8 @@ import { PackageRateService } from '../services/package-rate.service';
 /**
  * 패키지 관련 API 컨트롤러
  */
-@ApiTags('packages')
-@Controller('packages')
+@ApiTags('ari')
+@Controller('ari/packages')
 export class PackagesController {
   constructor(
     private readonly packageInfoService: PackageInfoService,
@@ -21,7 +21,7 @@ export class PackagesController {
   ) {}
 
   /**
-   * [GET] /packages
+   * [GET] /ari/packages
    * 홈페이지 패키지 상품 정보 조회
    * @param query langSet, channel, pCnYn, sbuCd
    * @returns PackageListResponseDto
@@ -34,7 +34,7 @@ export class PackagesController {
   }
 
   /**
-   * [GET] /packages/:packageNumber/rooms/:roomCode/rates
+   * [GET] /ari/packages/:packageNumber/rooms/:roomCode/rates
    * 패키지 룸 타입별 일자별 요금 조회
    * @param params packageNumber, roomCode
    * @param query startSearchDate, endSearchDate

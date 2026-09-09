@@ -1,3 +1,6 @@
+/**
+ * 홈페이지 패키지 상품 정보 조회 쿼리
+ */
 export const findPackagesQuery = `
       SELECT M.RP_SEQ AS "masterPackageNumber",
              TO_CHAR(M.SALESTYPE_SEQ) AS "packageNumber",

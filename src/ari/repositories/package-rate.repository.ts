@@ -17,8 +17,8 @@ export interface PackageRoomRateRow {
 export interface FindPackageRoomRatesCommand {
   packageNumber: string; // 패키지 번호
   roomCode: string; // 룸 타입 코드
-  startSearchDate?: string; // 시작 일자
-  endSearchDate?: string; // 종료 일자
+  startSearchDate: string; // 시작 일자
+  endSearchDate: string; // 종료 일자
 }
 
 /**
@@ -39,8 +39,6 @@ export class PackageRateRepository {
   async findPackageRoomRates(command: FindPackageRoomRatesCommand): Promise<PackageRoomRateRow[]> {
     const branchCd = this.configService.get<string>('home.defaultBranchCd', '1000');
     const channel = this.configService.get<string>('home.channel', 'WEB');
-    const startDate = command.startSearchDate ?? this.formatDate(new Date());
-    const endDate = command.endSearchDate ?? this.formatDate(this.addDays(new Date(), 30));
 
     const result = await this.databaseService.execute<{
       date: string;
@@ -54,35 +52,12 @@ export class PackageRateRepository {
         channel,
         packageNumber: command.packageNumber,
         roomCode: command.roomCode,
-        startDate,
-        endDate,
+        startDate: command.startSearchDate,
+        endDate: command.endSearchDate,
       },
     );
 
     return result.rows ?? [];
   }
 
-  /**
-   * 날짜 추가
-   * @param date Date
-   * @param days number
-   * @returns Date
-   */
-  private addDays(date: Date, days: number) {
-    const copied = new Date(date);
-    copied.setDate(copied.getDate() + days);
-    return copied;
-  }
-
-  /**
-   * 날짜 포맷팅
-   * @param date Date
-   * @returns string
-   */
-  private formatDate(date: Date) {
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, '0');
-    const day = `${date.getDate()}`.padStart(2, '0');
-    return `${year}${month}${day}`;
-  }
 }

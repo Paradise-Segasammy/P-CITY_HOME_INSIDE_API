@@ -14,6 +14,11 @@ export class PackageInfoService {
     private readonly configService: ConfigService,
   ) {}
 
+  /**
+   * 패키지 상품 목록 조회
+   * @param query langSet, channel, pCnYn, sbuCd
+   * @returns PackageListResponseDto
+   */
   async getPackages(query: PackageListQueryDto) {
     const rows = await this.packageInfoRepository.findPackages({
       langSet: query.langSet ?? 'KO',
