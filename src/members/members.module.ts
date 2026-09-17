@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { MemberFindIdService } from './services/member-find-id.service';
+import { MemberFindIdRepository } from './repositories/member-find-id.repository';
+import { MemberSmsRepository } from './repositories/member-sms.repository';
 import { MemberJwtService } from './guards/member-jwt.service';
 import { MemberIdentityRepository } from './repositories/member-identity.repository';
 import { MemberTokenGuard } from './guards/member-token.guard';
@@ -23,6 +26,9 @@ import { MemberAgreementRepository } from './repositories/member-agreement.repos
   imports: [DatabaseModule],
   controllers: [MembersController], //회원 컨트롤러
   providers: [
+    MemberFindIdService,
+    MemberFindIdRepository,
+    MemberSmsRepository,
     MemberJwtService, //회원 JWT 서비스
     MemberIdentityRepository,
     MemberAgreementService, //약관 동의

@@ -44,6 +44,23 @@ describe('database environment selection', () => {
     expect(oracle.irdb.env).toBe('dev');
   });
 
+  it('isolates development JWT lifetime from production', () => {
+    process.env.WEB_JWT_DEV_MAX_LIFETIME_SECONDS = '28800';
+    process.env.WEB_JWT_MAX_LIFETIME_SECONDS = '900';
+    process.env.NODE_ENV = 'local';
+    expect(configuration().app.webJwt.maxLifetimeSeconds).toBe(28800);
+    process.env.NODE_ENV = 'production';
+    expect(configuration().app.webJwt.maxLifetimeSeconds).toBe(900);
+  });
+  it('selects schema independently for IR development and production', () => {
+    process.env.ORACLE_IRDB_DEV_SCHEMA = 'DEV_OWNER';
+    process.env.ORACLE_IRDB_PROD_SCHEMA = 'PROD_OWNER';
+    process.env.ORACLE_IRDB_ENV = 'dev';
+    expect(configuration().oracle.irdb.schema).toBe('DEV_OWNER');
+    process.env.ORACLE_IRDB_ENV = 'prod';
+    expect(configuration().oracle.irdb.schema).toBe('PROD_OWNER');
+  });
+
   it('does not inherit HOME production selection for IRDB', () => {
     process.env.ORACLE_HOME_ENV = 'prod';
     expect(configuration().oracle.irdb.connectString).toBe('test-host:1521/irdev');

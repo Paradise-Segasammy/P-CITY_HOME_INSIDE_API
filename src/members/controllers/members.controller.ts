@@ -18,6 +18,9 @@ import { EmployeeResponseDto } from '../dto/employee.response.dto';
 import { MemberAgreementService } from '../services/member-agreement.service';
 import { MemberAgreementRequestDto } from '../dto/member-agreement.request.dto';
 import { MemberAgreementResponseDto } from '../dto/member-agreement.response.dto';
+import { FindIdRequestDto } from '../dto/find-id.request.dto';
+import { FindIdResponseDto } from '../dto/find-id.response.dto';
+import { MemberFindIdService } from '../services/member-find-id.service';
 
 /**
  * 회원 관련 API 컨트롤러
@@ -32,6 +35,7 @@ export class MembersController {
     private readonly memberPasswordService: MemberPasswordService,
     private readonly employeeService: EmployeeService,
     private readonly memberAgreementService: MemberAgreementService,
+    private readonly memberFindIdService: MemberFindIdService,
   ) {}
 
   /**
@@ -128,5 +132,19 @@ export class MembersController {
   @ApiSuccessResponse(IdDuplicationResponseDto)
   checkIdDuplication(@Body() body: IdDuplicationRequestDto) {
     return this.memberIdService.checkDuplicate(body);
+  }
+
+  /**
+   * [POST] /members/id/find/phone
+   * 휴대폰 아이디 찾기
+   * @param body userNm, userTel, lang
+   * @returns FindIdResponseDto
+   */
+  @Post('id/find/phone')
+  @ApiSecurity('home-api-key')
+  @ApiOperation({ summary: '휴대폰 아이디 찾기' })
+  @ApiSuccessResponse(FindIdResponseDto)
+  findId(@Body() body: FindIdRequestDto) {
+    return this.memberFindIdService.findId(body);
   }
 }

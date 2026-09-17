@@ -19,7 +19,7 @@ export class ServiceTermsController {
    * @returns 약관 조회 응답
    */
   @Get()
-  @ApiOperation({ summary: '약관 조회', description: '결제/다이닝 본문은 한국어로 조회합니다.' })
+  @ApiOperation({ summary: '약관 조회'})
   @ApiSuccessResponse(ServiceTermsResponseDto)
   getTerms(@Query() query: ServiceTermsQueryDto) {
     return this.service.getTerms(query);
