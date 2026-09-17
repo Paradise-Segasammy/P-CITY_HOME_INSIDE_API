@@ -21,12 +21,12 @@ import { TermsModule } from './terms/terms.module';
       isGlobal: true,
       load: [appConfig],
     }),
-    DatabaseModule,
-    HealthModule,
-    AriModule,
-    DevAuthModule,
-    MembersModule,
-    TermsModule,
+    DatabaseModule,//데이터베이스 모듈
+    HealthModule,//상태 모니터링 모듈
+    AriModule,//ARI 모듈
+    DevAuthModule,//개발용 Web Auth 모듈
+    MembersModule,//회원 모듈
+    TermsModule,//약관 모듈
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_GUARD, useClass: ApiKeyGuard }],
