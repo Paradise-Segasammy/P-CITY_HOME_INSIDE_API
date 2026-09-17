@@ -41,8 +41,8 @@ export interface EmployeeMappingRow {
  * 회원-임직원 매핑 키
  */
 export interface EmployeeMappingKey {
-  branchCode: string;
-  employeeId: string;
+  branchCd: string;
+  empId: string;
   custNo: string;
 }
 
@@ -82,13 +82,13 @@ export class EmployeeRepository {
 
   /**
    * 입력 사번과 회원 전화번호로 IRDB 임직원 조회
-   * @param employeeId - 입력받은 임직원 사번
+   * @param empId - 입력받은 임직원 사번
    * @param phone - HOME 회원 전화번호
    * @returns IRDB 임직원 행
    */
-  async findEmployees(employeeId: string, phone: string): Promise<EmployeeRow[]> {
+  async findEmployees(empId: string, phone: string): Promise<EmployeeRow[]> {
     const result = await this.database.executeOn<EmployeeRow>('irdb', getMatchingEmployeeQuery, {
-      EMP_ID: employeeId,
+      EMP_ID: empId,
       MOBILE_NO: phone,
     });
     return result.rows ?? [];
@@ -138,6 +138,6 @@ export class EmployeeRepository {
    * @returns 회원-임직원 매핑 바인드
    */
   private binds(key: EmployeeMappingKey) {
-    return { BRANCH_CD: key.branchCode, EMP_ID: key.employeeId, CUST_NO: key.custNo };
+    return { BRANCH_CD: key.branchCd, EMP_ID: key.empId, CUST_NO: key.custNo };
   }
 }

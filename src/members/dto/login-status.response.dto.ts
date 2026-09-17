@@ -39,17 +39,17 @@ export class LoginStatusResponseDto {
   /**
    * 비밀번호 일치 여부
    */
-  passwordMatched: boolean;
+  pwdMatched: boolean;
 
   @ApiProperty({ description: '연속 로그인 실패횟수', example: 0 })
   /**
    * 연속 로그인 실패횟수
    */
-  passwordFailCount: number;
+  pwdFailCnt: number;
 
   @ApiProperty({ description: '로그인 실패 제한횟수', example: 5 })
   /**
    * 로그인 실패 제한횟수
    */
-  passwordFailLimit: number;
+  pwdFailLimit: number;
 }

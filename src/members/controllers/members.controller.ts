@@ -58,7 +58,7 @@ export class MembersController {
    * [POST] /members/employee
    * 임직원 사번 등록
    * @param request member (액세스 토큰)
-   * @param body employeeId, branchCode
+   * @param body empId, branchCd
    * @returns EmployeeResponseDto
    */
   @Post('employee')
@@ -103,7 +103,7 @@ export class MembersController {
   /**
    * [POST] /members/login
    * 로그인 전 회원 상태, 비번 일치 여부, 연속 실패횟수 확인
-   * @param body userId, userPassword
+   * @param body userId, userPwd
    * @returns LoginStatusResponseDto
    */
   @Post('login')

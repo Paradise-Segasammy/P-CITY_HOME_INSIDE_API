@@ -5,7 +5,7 @@ import { toLoginStatusResponse } from '../mappers/member-response.mapper';
 import { verifyPssPassword } from '../password/pss-password.util';
 import { MemberLoginRepository } from '../repositories/member-login.repository';
 
-const PASSWORD_FAIL_LIMIT = 5;
+const PWD_FAIL_LIMIT = 5;
 
 /**
  * 로그인 전 회원 상태 확인 서비스
@@ -23,32 +23,32 @@ export class MemberLoginService {
     const userId = this.normalizeUserId(command.userId);
     return this.memberLoginRepository.withLockedMember(userId, async (member, connection) => {
       if (!member) {
-        return toLoginStatusResponse(userId, 'NOT_FOUND', false, 0, PASSWORD_FAIL_LIMIT);
+        return toLoginStatusResponse(userId, 'NOT_FOUND', false, 0, PWD_FAIL_LIMIT);
       }
 
-      if (this.isLocked(member.passwordFailCount, member.isPass)) {
-        return toLoginStatusResponse(userId, 'LOCKED', false, PASSWORD_FAIL_LIMIT, PASSWORD_FAIL_LIMIT);
+      if (this.isLocked(member.pwdFailCnt, member.isPass)) {
+        return toLoginStatusResponse(userId, 'LOCKED', false, PWD_FAIL_LIMIT, PWD_FAIL_LIMIT);
       }
 
-      const passwordMatched = verifyPssPassword(command.userPassword, member.userPassword);
-      if (!passwordMatched) {
+      const pwdMatched = verifyPssPassword(command.userPwd, member.userPwd);
+      if (!pwdMatched) {
         const previousCount =
-          (member.passwordFailCount ?? 0) >= PASSWORD_FAIL_LIMIT && member.isPass === 'PASS'
+          (member.pwdFailCnt ?? 0) >= PWD_FAIL_LIMIT && member.isPass === 'PASS'
             ? 0
-            : (member.passwordFailCount ?? 0);
-        const nextFailCount = Math.min(previousCount + 1, PASSWORD_FAIL_LIMIT);
-        await this.memberLoginRepository.updatePasswordFailCount(connection, userId, nextFailCount);
+            : (member.pwdFailCnt ?? 0);
+        const nextPwdFailCnt = Math.min(previousCount + 1, PWD_FAIL_LIMIT);
+        await this.memberLoginRepository.updatePwdFailCnt(connection, userId, nextPwdFailCnt);
         return toLoginStatusResponse(
           userId,
-          nextFailCount >= PASSWORD_FAIL_LIMIT ? 'LOCKED' : 'ACTIVE',
+          nextPwdFailCnt >= PWD_FAIL_LIMIT ? 'LOCKED' : 'ACTIVE',
           false,
-          nextFailCount,
-          PASSWORD_FAIL_LIMIT,
+          nextPwdFailCnt,
+          PWD_FAIL_LIMIT,
         );
       }
 
-      if ((member.passwordFailCount ?? 0) > 0) {
-        await this.memberLoginRepository.resetPasswordFailCount(connection, userId);
+      if ((member.pwdFailCnt ?? 0) > 0) {
+        await this.memberLoginRepository.resetPwdFailCnt(connection, userId);
       }
 
       if (
@@ -56,9 +56,9 @@ export class MemberLoginService {
         !/^\d{10}$/.test(member.custNo) ||
         !(await this.memberLoginRepository.hasUniqueIdentity(connection, userId, member.custNo))
       ) {
-        return toLoginStatusResponse(userId, 'IDENTITY_UNAVAILABLE', true, 0, PASSWORD_FAIL_LIMIT);
+        return toLoginStatusResponse(userId, 'IDENTITY_UNAVAILABLE', true, 0, PWD_FAIL_LIMIT);
       }
-      return toLoginStatusResponse(userId, 'ACTIVE', true, 0, PASSWORD_FAIL_LIMIT, member.custNo);
+      return toLoginStatusResponse(userId, 'ACTIVE', true, 0, PWD_FAIL_LIMIT, member.custNo);
     });
   }
 
@@ -75,11 +75,11 @@ export class MemberLoginService {
 
   /**
    * 비밀번호 실패 횟수 확인
-   * @param passwordFailCount 비밀번호 실패 횟수
+   * @param pwdFailCnt 비밀번호 실패 횟수
    * @param isPass 비밀번호 통과 여부
    * @returns 비밀번호 실패 횟수 확인 결과
    */
-  private isLocked(passwordFailCount: number | null, isPass: 'PASS' | 'UNPASS') {
-    return (passwordFailCount ?? 0) >= PASSWORD_FAIL_LIMIT && isPass === 'UNPASS';
+  private isLocked(pwdFailCnt: number | null, isPass: 'PASS' | 'UNPASS') {
+    return (pwdFailCnt ?? 0) >= PWD_FAIL_LIMIT && isPass === 'UNPASS';
   }
 }

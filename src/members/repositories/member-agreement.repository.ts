@@ -16,7 +16,7 @@ export interface OptionalAgreementRow {
   LOCATION_FLAG: string | null;
 }
 export interface AgreementKey {
-  branchCode: string;
+  branchCd: string;
   custNo: string;
 }
 export interface AgreementChange {
@@ -122,6 +122,6 @@ export class MemberAgreementRepository {
    * @returns 멤버 동의 정보 키 바인딩 결과
    */
   private binds(key: AgreementKey) {
-    return { BRANCH_CD: key.branchCode, CUST_NO: key.custNo };
+    return { BRANCH_CD: key.branchCd, CUST_NO: key.custNo };
   }
 }

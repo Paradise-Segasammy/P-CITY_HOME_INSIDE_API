@@ -26,10 +26,10 @@ export class EmployeeService {
     if (member.mode !== 'MEMBER') throw new ForbiddenException('Members only.');
     await this.repository.transaction(async (connection) => {
       const account = await this.findVerifiedMember(connection, member);
-      await this.verifyEmployee(body.employeeId, account);
+      await this.verifyEmployee(body.empId, account);
       await this.registerMapping(connection, {
-        branchCode: body.branchCode,
-        employeeId: body.employeeId,
+        branchCd: body.branchCd,
+        empId: body.empId,
         custNo: member.custNo,
       });
     });
@@ -53,14 +53,14 @@ export class EmployeeService {
 
   /**
    * 회원 전화번호와 이름으로 IRDB 임직원 정보를 확인
-   * @param employeeId 입력받은 임직원 사번
+   * @param empId 입력받은 임직원 사번
    * @param account HOME 회원 정보
    */
-  private async verifyEmployee(employeeId: string, account: EmployeeMemberRow): Promise<void> {
+  private async verifyEmployee(empId: string, account: EmployeeMemberRow): Promise<void> {
     if (!account.USER_TEL || account.USER_TEL.replace(/\D/g, '').length < 7) {
       throw new BusinessException(CommonErrorCode.MEMBER_PHONE_INVALID);
     }
-    const employees = await this.repository.findEmployees(employeeId, account.USER_TEL);
+    const employees = await this.repository.findEmployees(empId, account.USER_TEL);
     if (employees.length !== 1 || !matchesEmployeeName(employees[0], account)) {
       throw new BusinessException(CommonErrorCode.EMPLOYEE_NOT_MATCHED);
     }

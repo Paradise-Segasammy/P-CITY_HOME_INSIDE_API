@@ -14,7 +14,7 @@ export class LoginStatusRequestDto {
   @MaxLength(200)
   userId: string;
 
-  @ApiProperty({ description: '사용자 비밀번호', example: 'paradisecity1!' })
+  @ApiProperty({ description: '사용자 비밀번호. DB USER_PWD 검증 대상', example: 'paradisecity1!' })
   /**
    * 사용자 비밀번호
    */
@@ -22,5 +22,5 @@ export class LoginStatusRequestDto {
   @IsString()
   @MinLength(4)
   @MaxLength(200)
-  userPassword: string;
+  userPwd: string;
 }

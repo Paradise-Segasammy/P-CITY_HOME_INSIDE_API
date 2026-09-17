@@ -29,27 +29,27 @@ export const toIdDuplicationResponse = (userId: string, duplicated: boolean): Id
  * 로그인 상태 응답
  * @param userId 회원 ID
  * @param memberStatus 회원 상태
- * @param passwordMatched 비밀번호 일치 여부
- * @param passwordFailCount 비밀번호 실패 횟수
- * @param passwordFailLimit 비밀번호 실패 제한
+ * @param pwdMatched 비밀번호 일치 여부
+ * @param pwdFailCnt 비밀번호 실패 횟수
+ * @param pwdFailLimit 비밀번호 실패 제한
  * @returns 로그인 상태 응답 DTO
  */
 export const toLoginStatusResponse = (
   userId: string,
   memberStatus: MemberStatus,
-  passwordMatched: boolean,
-  passwordFailCount: number,
-  passwordFailLimit: number,
+  pwdMatched: boolean,
+  pwdFailCnt: number,
+  pwdFailLimit: number,
   custNo: string | null = null,
 ): LoginStatusResponseDto => ({
   userId,
   memberStatus,
-  passwordMatched,
-  passwordFailCount,
-  passwordFailLimit,
-  authenticated: memberStatus === 'ACTIVE' && passwordMatched && custNo !== null,
-  subject: memberStatus === 'ACTIVE' && passwordMatched ? custNo : null,
-  custNo: memberStatus === 'ACTIVE' && passwordMatched ? custNo : null,
+  pwdMatched,
+  pwdFailCnt,
+  pwdFailLimit,
+  authenticated: memberStatus === 'ACTIVE' && pwdMatched && custNo !== null,
+  subject: memberStatus === 'ACTIVE' && pwdMatched ? custNo : null,
+  custNo: memberStatus === 'ACTIVE' && pwdMatched ? custNo : null,
 });
 
 /**

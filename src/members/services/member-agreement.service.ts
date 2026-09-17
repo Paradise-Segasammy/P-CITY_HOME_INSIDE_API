@@ -28,7 +28,7 @@ export class MemberAgreementService {
       throw new BadRequestException('Location consent must be Y or N.');
     }
     // 회원 정보 키
-    const key = { branchCode: '1000', custNo: member.custNo };
+    const key = { branchCd: '1000', custNo: member.custNo };
     await this.repository.transaction(async (connection) => {
       await this.findVerifiedMember(connection, member);
       await this.lockCustomer(connection, key);

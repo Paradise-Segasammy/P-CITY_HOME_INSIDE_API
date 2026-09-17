@@ -1,8 +1,8 @@
 import {
   findMemberLoginForUpdateQuery,
   countMemberByUserIdQuery,
-  updatePasswordFailCountQuery,
-  resetPasswordFailCountQuery,
+  updatePwdFailCntQuery,
+  resetPwdFailCntQuery,
 } from './queries/member-login.queries';
 import { BadRequestException, Injectable, ServiceUnavailableException } from '@nestjs/common';
 import * as oracledb from 'oracledb';
@@ -13,8 +13,8 @@ import { DatabaseService } from '../../database/database.service';
 export interface MemberLoginRow {
   userId: string;
   custNo: string | null;
-  userPassword: string;
-  passwordFailCount: number | null;
+  userPwd: string;
+  pwdFailCnt: number | null;
   isPass: 'PASS' | 'UNPASS';
 }
 
@@ -86,16 +86,16 @@ export class MemberLoginRepository {
    * 비밀번호 실패 횟수 업데이트
    * @param connection - 데이터베이스 연결
    * @param userId - 사용자 아이디
-   * @param passwordFailCount - 비밀번호 실패 횟수
+   * @param pwdFailCnt - 비밀번호 실패 횟수
    */
-  async updatePasswordFailCount(
+  async updatePwdFailCnt(
     connection: oracledb.Connection,
     userId: string,
-    passwordFailCount: number,
+    pwdFailCnt: number,
   ): Promise<void> {
     const result = await connection.execute(
-      updatePasswordFailCountQuery('TBL_MEMBER'),
-      { userId, passwordFailCount },
+      updatePwdFailCntQuery('TBL_MEMBER'),
+      { userId, pwdFailCnt },
       { autoCommit: false },
     );
 
@@ -107,9 +107,9 @@ export class MemberLoginRepository {
    * @param connection - 데이터베이스 연결
    * @param userId - 사용자 아이디
    */
-  async resetPasswordFailCount(connection: oracledb.Connection, userId: string): Promise<void> {
+  async resetPwdFailCnt(connection: oracledb.Connection, userId: string): Promise<void> {
     const result = await connection.execute(
-      resetPasswordFailCountQuery('TBL_MEMBER'),
+      resetPwdFailCntQuery('TBL_MEMBER'),
       { userId },
       { autoCommit: false },
     );
