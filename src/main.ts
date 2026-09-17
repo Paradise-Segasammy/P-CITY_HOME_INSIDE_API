@@ -46,6 +46,10 @@ async function bootstrap() {
       'home-api-key',
     )
     .addSecurityRequirements('home-api-key')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', description: 'RS256 Access JWT. Paste the token without the Bearer prefix.' },
+      'member-access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

@@ -8,6 +8,23 @@ export default () => ({
     globalPrefix: process.env.GLOBAL_PREFIX || 'api',
     corsOrigin: process.env.CORS_ORIGIN || '*',
     homeApiKey: process.env.HOME_API_KEY,
+    webJwt: {
+      issuer: process.env.WEB_JWT_ISSUER,
+      audience: process.env.WEB_JWT_AUDIENCE,
+      keysFile:
+        process.env.WEB_JWT_KEYS_FILE ||
+        (process.env.WEB_AUTH_DEV_ENABLED === 'true' ? '.cache/web-auth/public-keys.json' : undefined),
+      maxLifetimeSeconds: Number(
+        (['local', 'development', 'test'].includes(process.env.NODE_ENV || 'local') &&
+          process.env.WEB_JWT_DEV_MAX_LIFETIME_SECONDS) ||
+          process.env.WEB_JWT_MAX_LIFETIME_SECONDS || 900,
+      ),
+      clockToleranceSeconds: Number(process.env.WEB_JWT_CLOCK_TOLERANCE_SECONDS || 30),
+    },
+    devAuth: {
+      enabled: process.env.WEB_AUTH_DEV_ENABLED === 'true',
+      privateKeyFile: process.env.WEB_AUTH_DEV_PRIVATE_KEY_FILE || '.cache/web-auth/private.pem',
+    },
   },
   oracle: {
     home: {
@@ -32,6 +49,9 @@ export default () => ({
     },
     irdb: {
       env: process.env.ORACLE_IRDB_ENV || 'dev',
+      schema: (process.env.ORACLE_IRDB_ENV || 'dev') === 'prod'
+        ? process.env.ORACLE_IRDB_PROD_SCHEMA
+        : process.env.ORACLE_IRDB_DEV_SCHEMA,
       user:
         (process.env.ORACLE_IRDB_ENV || 'dev') === 'prod'
           ? process.env.ORACLE_IRDB_PROD_USER
@@ -55,5 +75,6 @@ export default () => ({
     defaultBranchCd: process.env.HOME_DEFAULT_BRANCH_CD || '1000',
     channel: process.env.HOME_CHANNEL || 'WEB',
     assetBaseUrl: process.env.HOME_ASSET_BASE_URL || '',
+    memberDbLink: process.env.HOME_MEMBER_DB_LINK || process.env.DBLINK_HP || '',
   },
 });

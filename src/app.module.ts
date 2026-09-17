@@ -8,6 +8,8 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { HealthModule } from './health/health.module';
 import { AriModule } from './ari/ari.module';
+import { DevAuthModule } from './dev-auth/dev-auth.module';
+import { MembersModule } from './members/members.module';
 import { TermsModule } from './terms/terms.module';
 
 /**
@@ -22,6 +24,8 @@ import { TermsModule } from './terms/terms.module';
     DatabaseModule,
     HealthModule,
     AriModule,
+    DevAuthModule,
+    MembersModule,
     TermsModule,
   ],
   controllers: [AppController],
