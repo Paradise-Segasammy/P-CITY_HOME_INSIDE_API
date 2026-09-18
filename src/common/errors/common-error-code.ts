@@ -13,6 +13,10 @@ export interface ErrorDefinition {
  * 공통 에러 코드
  */
 export const CommonErrorCode = {
+  MEMBER_PASSWORD_MISMATCH: {
+    code: 'MEMBER_PASSWORD_MISMATCH', httpStatus: HttpStatus.UNPROCESSABLE_ENTITY,
+    message: '현재 비밀번호가 일치하지 않습니다.',
+  },
   AGREEMENT_UPDATE_BUSY: {
     code: 'AGREEMENT_UPDATE_BUSY', httpStatus: HttpStatus.CONFLICT,
     message: '회원 약관이 업데이트 중입니다. 나중에 다시 시도하세요.',
